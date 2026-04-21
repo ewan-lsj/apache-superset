@@ -392,7 +392,6 @@ const config = {
               'react-dom',
               'redux',
               'react-redux',
-              'react-sortable-hoc',
               'react-table',
               'react-ace',
               'webpack.*',
