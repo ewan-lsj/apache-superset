@@ -15,10 +15,29 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .db2 import DB2
-from .dremio import Dremio
-from .firebolt import Firebolt, FireboltOld
-from .opensearch import OpenSearch
-from .pinot import Pinot
+"""Tests for MCP schema discovery helpers."""
 
-__all__ = ["DB2", "Dremio", "Firebolt", "FireboltOld", "OpenSearch", "Pinot"]
+from superset.mcp_service.common.schema_discovery import (
+    CHART_EXTRA_COLUMNS,
+    ColumnMetadata,
+    get_columns_from_model,
+)
+from superset.models.slice import Slice
+
+
+def test_get_columns_from_model_excludes_matching_extra_columns():
+    columns = get_columns_from_model(
+        Slice,
+        default_columns=["id"],
+        extra_columns={
+            "owners": ColumnMetadata(**CHART_EXTRA_COLUMNS["owners"].model_dump()),
+            "url": ColumnMetadata(**CHART_EXTRA_COLUMNS["url"].model_dump()),
+        },
+        exclude_columns={"owners"},
+    )
+
+    column_names = {column.name for column in columns}
+
+    assert "id" in column_names
+    assert "url" in column_names
+    assert "owners" not in column_names
