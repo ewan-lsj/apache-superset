@@ -59,10 +59,12 @@ class DatabaseFilter(ColumnOperator):
         "database_name",
         "expose_in_sqllab",
         "allow_file_upload",
+        "created_by_fk",
     ] = Field(
         ...,
         description="Column to filter on. Use get_schema(model_type='database') for "
-        "available filter columns.",
+        "available filter columns. For created_by_fk, any value is accepted — "
+        "the system automatically substitutes the authenticated user's ID.",
     )
     opr: ColumnOperatorEnum = Field(
         ...,
